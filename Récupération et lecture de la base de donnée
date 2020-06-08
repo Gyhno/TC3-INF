@@ -164,3 +164,62 @@ def get_gdp(info):
             pib=nettoie(pib)
         return pib
     return "beaucoup?" #cas terminal si il n'y a pas d'informations sur le PIB du pays : on ne doit pas s'y retrouver
+    
+    #récupération de la langue officielle du pays (ou de la première langue officielle quand il y en a plusieurs)
+    
+    def get_languages(info):
+    if "common_name" in info:#pays ne pouvant pas être traité avec le même appel que les autres
+        if info["common_name"]=="Bolivia":
+            return "Spanish" 
+        if info["common_name"]=="New Zealand":
+            return "English" 
+        if info["common_name"]=="Suriname":
+            return "Dutch" 
+    if "languages" in info:#cas où la langue est répertorié comme 'language'
+        language=info['languages']
+        if "{{unbulleted" in language:#on élimine la ponctuation
+            m=re.match("\{\{unbulleted list\|\[\[(\w+)",language)
+            language=m.group(1)
+        elif "{{hlist" in language:
+            m=re.match("\{\{hlist \|\[\[([\w ]+)",language)
+            language=m.group(1)
+        else:
+            m=re.match("\[\[([\w ]+)",language)
+            language=m.group(1)
+        if 'English' in language:#on trouve la langue du pays considéré
+            language= 'English'
+        if "Portuguese" in language:
+            language="Portuguese"
+        if "Spanish" in language:
+            language="Spanish"
+        
+        return language
+    elif "official_languages" in info:#cas où la langue est répertoriée comme 'official_languages'"
+        language=info['official_languages']
+        if "{{unbulleted" in language:#on élimine la ponctuation
+            m=re.match("\{\{unbulleted list[ ]*\|[ ]*\[\[(\w+)",language)
+            language=m.group(1)
+        elif "{{hlist" in language:
+            m=re.match("\{\{hlist[ ]*\|\[\[([\w ]+)",language)
+            language=m.group(1)
+        else:
+            m=re.match("\[\[([\w ]+)",language)
+            language=m.group(1)
+        if 'English' in language:#on trouve la langue du pays considéré
+            language= 'English'
+        if "Portuguese" in language:
+            language="Portuguese"
+        if "Spanish" in language:
+            language="Spanish"
+        
+        return language
+        
+#récupération de toutes les infos précédentes 
+      
+def get_infos(info):
+  return [get_capital(info),get_name(info),get_language(info),get_head_of_state(info),get_population(info),get_surface(info),get_gdp(info),get_coords(info)]
+
+#récupération d'une photo du pays
+
+def get_image(country):
+    return country+'.png'
