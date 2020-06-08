@@ -34,6 +34,33 @@ ec = get_info('Ecuador','south_america')
 gu = get_info('Guyana','south_america')
 pa = get_info('Paraguay','south_america')
 
+def print_capital(info): #pour obtenir les info correspondantes
+  nom = info.get('commun_name')
+  capital = info.get('capital')
+  coord = info.get('coordinates')
+  return nom, capital, coord
+  
+def get_name(info):
+  name = info['conventional_long_name'] # tous les pays l'ont
+  #on traite le cas particulier e l'argentine pour que ça marche
+  if "Argentine" in name:
+        return "Argentine Republic"
+  #traiter les autres cas
+  if '[[' in name:
+        m = re.match("\[\[(\w+)\]\]", name) 
+        m=m.group(1)
+    elif '[' in name:
+        m=re.match("\[(\w+)\]", name) 
+        m=m.group(1)
+    else:
+        m=name
+    return m
+
+def get_capital(info):
+  capital = info['capital']
+  if 
+
+
 def get_head_of_state(info):    #renvoie le nom du leader
                                 #et son titre (ex : President, Roi..)
     if 'leader_title1' in info:
