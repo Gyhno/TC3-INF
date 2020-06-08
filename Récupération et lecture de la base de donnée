@@ -1,2 +1,30 @@
 première ligne de code
 tu coco
+
+
+#récupération des coordonnées
+
+def get_coords(info): 
+    """ne fonctionne que pour les formats Nbre|nbre|lettre|nb|nb|lettre|qqchose, il faut traiter à part ceux qui on des secondes NB|nb|nb|lettre"""
+    lat=None #initialisation des coordonnées
+    long=None
+    if 'common_name' in info: #on traite le cas particulier du Vanuatu
+        if info['common_name']=='Vanuatu':
+            return{'lat':'17°43'+"'"+'48"S','long':'163°19'+"'"+'00"E'}
+    if "coordinates" in info: #on cherche les coordonnées dans les informations
+        coo=info['coordinates']
+        if '{{' in coo: #on récupère les coordonnées et on les met en forme
+            m = re.match("(?i).*{{coord\s*\|([^}]*)}}", coo)
+            coo = m.group(1)
+            
+            m=re.match('(\w+)\|(\w+)\|(\w+)\|(\w+)\|(\w+)\|(\w+)',coo)
+            if m.group(3) in ['N','S']: #on continue à mettre en forme les coordonnées
+                lat=m.group(1)+"°"+m.group(2)+"' "+m.group(3)
+                long=m.group(4)+"°"+m.group(5)+"' "+m.group(6)
+            else:
+                m=re.match('(\w+)\|(\w+)\|(\w+)\|(\w+)\|(\w+)\|(\w+)\|(\w+)\|(\w+)',coo)
+                lat=m.group(1)+"°"+m.group(2)+"' "+m.group(3)+'"'+m.group(4)
+                long=m.group(5)+"°"+m.group(6)+"' "+m.group(7)+'"'+m.group(8)
+        co={'lat':lat , 'long':long} #on choisit un format d'affichage des coordonnées
+        return co
+    return {'lat':'???','long':'???'} #cas terminal que l'on ne doit pas rencontrer
