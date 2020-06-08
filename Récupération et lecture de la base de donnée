@@ -56,10 +56,31 @@ def get_name(info):
         m=name
     return m
 
-def get_capital(info):
+def get_capital(info): # pour avoir l'info sur la capitale du pays
   capital = info['capital']
-  if 
-
+  if 'common_name' in info:
+        if info['common_name'] =='Bolivia': # cas particulier
+            return 'Sucre is the constitutional capital, but the government seats at La Paz'
+    if '[[' in capital: #on traite ce cas là
+        #m = re.match("\[\[(\w+)\]\]", capital)
+        #capital = m.group(1) 
+        capital=capital[2:-2]
+    return capital
+    
+def get_population(info): #renvoie info sur la population
+  if 'common_name' in info:
+        if info['common_name']=='Venezuela': # cas particulier
+            return '28,067,000'
+  if 'population_census' in info:
+        return info['population_census']
+  elif "population_estimate" in info:
+        pop=info['population_estimate']
+        if "(2019)" in pop:
+            pop=pop[:-7]
+        if "{{increase}}" in pop:
+            pop=pop[13:]
+        return pop
+    return "not found" # le cas échéant
 
 def get_head_of_state(info):    #renvoie le nom du leader
                                 #et son titre (ex : President, Roi..)
