@@ -1,6 +1,66 @@
 première ligne de code
-tu coco
 
+
+def get_info(country,continent):  #prend en argument le pays
+                                   #et le contient(océanie ou amérique du sud)
+    with ZipFile('{}.zip'.format(continent),'r') as z:
+        return json.loads(z.read('{}.json'.format(country)))
+
+
+a= get_info('Australia','oceania')
+v=get_info('Vanuatu','oceania')
+f=get_info('Fiji','oceania')
+m=get_info('Federated_States_of_Micronesia','oceania')
+p=get_info('Papua_New_Guinea','oceania')
+nz=get_info('New_Zealand','oceania')
+ar=get_info('Argentina','south_america')
+bo=get_info('Bolivia','south_america')
+br=get_info('Brazil','south_america')
+u=get_info('Uruguay','south_america')
+ch=get_info('Chile','south_america')
+co=get_info('Colombia','south_america')
+per=get_info('Peru','south_america')
+s=get_info('Suriname','south_america')
+nau=get_info('Nauru','oceania')
+pau=get_info('Palau','oceania')
+k=get_info('Kiribati','oceania')
+mai=get_info('Marshall_Islands','oceania')
+ven=get_info('Venezuela','south_america')
+sam=get_info('Samoa','oceania')
+sal=get_info('Solomon_Islands','oceania')
+ton = get_info('Tonga','oceania')
+tuv = get_info('Tuvalu','oceania')
+ec = get_info('Ecuador','south_america')
+gu = get_info('Guyana','south_america')
+pa = get_info('Paraguay','south_america')
+
+def get_head_of_state(info):    #renvoie le nom du leader
+                                #et son titre (ex : President, Roi..)
+    if 'leader_title1' in info:
+        if 'common_name' in info:
+            if info['common_name']=='Chile':   #pour le chili ca ne marche pas
+                                                #alors on le fait manuellement
+                return('Sebastián Piñera','President')
+            if info['common_name']=='Venezuela':
+                return('Nicolas Maduro','President') #idem pour Venezuela
+        title=info['leader_title1'] #certain leader ne sont pas président
+        name=info['leader_name1']
+        if '[[' in name:
+            t=re.match("\[\[([\w ]+)",name) #on enleve les '['
+            if t is None:
+                return "Erreur sur la page wikipédia"
+            name = t.group(1)   #sinon on a le nom
+        if '[[' in title:
+            t=re.match("\[\[([\w ]+)",title) #on enleve les '['
+            if t is None:
+                return "Erreur sur la page wikipédia"
+            title = t.group(1)
+        if "Monarch" in title:  
+            title="Monarch"
+        if "President" in title:
+            title="President"
+        return (name,title)
+    return "Erreur sur la page wikipédia"
 
 #récupération des coordonnées du pays
 
