@@ -59,7 +59,7 @@ def get_name(info):
 def get_capital(info): # pour avoir l'info sur la capitale du pays
   capital = info['capital']
   if 'common_name' in info:
-        if info['common_name'] =='Bolivia': # cas particulier
+        if info['common_name'] =='Bolivia': # cas particulier à traiter
             return 'Sucre is the constitutional capital, but the government seats at La Paz'
     if '[[' in capital: #on traite ce cas là
         #m = re.match("\[\[(\w+)\]\]", capital)
@@ -69,7 +69,7 @@ def get_capital(info): # pour avoir l'info sur la capitale du pays
     
 def get_population(info): #renvoie info sur la population
   if 'common_name' in info:
-        if info['common_name']=='Venezuela': # cas particulier
+        if info['common_name']=='Venezuela': # cas particulier pour que ça fonctionne
             return '28,067,000'
   if 'population_census' in info:
         return info['population_census']
