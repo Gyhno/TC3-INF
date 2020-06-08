@@ -34,3 +34,25 @@ def get_coords(info):
 def get_surface(info): 
     """on cherche la surface dans les informations du pays et on la retourne"""
     return info['area_km2']
+
+#récupération du PIB du pays 
+
+def nettoie(str): 
+    """fonction qui enlève des blocs inutiles de type '-----&' dans les chaînes de caractère """
+    i=0
+    while str[i] != '&':
+        i=i+1
+    return str[:i-1]+" "+str[i+6:]
+            
+def get_gdp(info):
+    if 'common_name' in info: #on traite les cas particuliers de l'Australie et du Venezuela
+        if info['common_name']=='Australia':
+            return '$1.313 trillion'
+        if info['common_name']=='Venezuela':
+            return '$70,14 billion'
+    if 'GDP_PPP' in info: #on cherche le PIB dans les informations du pays pour les autres cas
+        pib=info['GDP_PPP']
+        if "&nbsp;" in pib: #on nettoie la chaîne de caractères correspondant au PIB si besoin
+            pib=nettoie(pib)
+        return pib
+    return "beaucoup?" #cas terminal si il n'y a pas d'informations sur le PIB du pays : on ne doit pas s'y retrouver
