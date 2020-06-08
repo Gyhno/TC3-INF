@@ -2,7 +2,7 @@ première ligne de code
 tu coco
 
 
-#récupération des coordonnées
+#récupération des coordonnées du pays
 
 def get_coords(info): 
     """ne fonctionne que pour les formats Nbre|nbre|lettre|nb|nb|lettre|qqchose, il faut traiter à part ceux qui on des secondes NB|nb|nb|lettre"""
@@ -28,3 +28,9 @@ def get_coords(info):
         co={'lat':lat , 'long':long} #on choisit un format d'affichage des coordonnées
         return co
     return {'lat':'???','long':'???'} #cas terminal que l'on ne doit pas rencontrer
+
+#récupération de la surface du pays
+
+def get_surface(info): 
+    """on cherche la surface dans les informations du pays et on la retourne"""
+    return info['area_km2']
