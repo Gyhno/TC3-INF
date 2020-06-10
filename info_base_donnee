@@ -1,0 +1,25 @@
+import sqlite3
+
+# Ouverture d'une connexion avec la base de données
+
+conn = sqlite3.connect('pays.db')
+
+def save_country(conn,Country,info,continent): #prend en argument
+                                               #con, le pays, la base de donnée et
+                                               #le contient 
+  c = conn.cursor()
+  sql = 'INSERT INTO countries VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)'
+  # on enregistre les infos 
+  name = get_name(info)
+  capital = get_capital(info)
+  language = get_languages(info)
+  head_of_state_name = get_head_of_state(info)[0]
+  head_of_state_title = get_head_of_state(info)[1]
+  flag = get_image(Country)
+  population = get_population(info)
+  surface = get_surface(info)
+  gdp = get_gdp(info)
+  coords = get_coords(info)
+  c.execute(sql,(Country,name, capital, language,flag,head_of_state_name,head_of_state_title,population,surface,gdp, coords['lat'],coords['long'],continent)) #coords est cense etre un dictionnaire
+  conn.commit()
+  
