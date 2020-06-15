@@ -1,6 +1,3 @@
-première ligne de code
-
-
 def get_info(country,continent):  #prend en argument le pays
                                    #et le contient(océanie ou amérique du sud)
     with ZipFile('{}.zip'.format(continent),'r') as z:
