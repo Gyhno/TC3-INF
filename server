@@ -21,3 +21,14 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
     #mettre ces données sous forme json :
     self.send_json(dico)
     
+
+  #méthode pour envoyer l'objet statique voulu : 
+  def send_static (self):
+    self.path = self.static_dir + self_path #on met le répertoire en préfixe pour changer le chemin d'accès
+    #puis avec la methode parent : 
+    if (self.command===='HEAD'):
+      http.server.SimpleHTTPRequestHandler.do_HEAD(self) # avec verbe HEAD 
+    else : 
+      http.server.SimpleHTTPRequestHandler.do_GET(self) # avec verbe GET 
+    
+    
