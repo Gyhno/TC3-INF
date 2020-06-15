@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<head>
+	<title>Carte du monde</title>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	<meta charset='utf-8'>
+</head>
+
+<body>
+	<div id="corps">		<!--Séléction du continent-->
+		<p>The map of
+	  <select id = "continent_selector">
+	    <option value = "oceania">Oceania</option>
+	    <option value = "south_america">South America</option>
+	  </select> </p>
+		<!--Corps du contenu-->
+	</div>
+
+
+		<div id="map" style="float:right">
+			<legend style="font-variant: small-caps;">Carte :</legend>
+		</div>
+
+			<div id='information'>
+				<legend style="font-variant: small-caps;">Informations :</legend>
+
+				<p id="name">Country :</p>
+				<p id="flag" >Flag :</p>
+				<p id="capital">Capital :</p>
+				<p id="language">Language :</p>
+				<p id="head_of_state_name">Head of state :</p>
+				<p id="head_of_state_title">Head of state title :</p>
+				<p id="population">Population :</p>
+				<p id="surface">Surface :</p>
+				<p id="gdp">G.D.P :</p>
+				<p id="lat">Latitude :</p>
+				<p id="long">Longitude :</p>
+			</div>
+</body>
+
+<style>
+#corps {
+	position: absolute;
+	opacity: 92%;
+	top: 2.5vh;
+	rigth: 5vw;
+	left : 5vw;
+	font-family: police, trebuchet, helvetica, sans-serif;
+	font-size: 3vh;
+	height: 10vh;
+	width : 90vw;
+	padding:auto;
+	background-color: #FFFFFF;
+	text-align: center;
+	align-items: center;
+}
+
+#continent_selector {
+	opacity: 92%;
+	font-family: police, trebuchet, helvetica, sans-serif;
+	font-size: 2.5vh;
+	align-self: center;
+  margin: auto;
+  border: 2px solid gray;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-left: 5px;
+}
+
+#information {
+	position: absolute;	
+	font-family: police, trebuchet, helvetica, sans-serif;
+	background-color:#FFFFFF;
+	opacity: 92%;
+	width: 43.75vw;
+	height: 78vh;
+	top : 15vh;
+	margin-left :5vw;
+	overflow: auto;
+	padding: 10px;
+}
+legend{
+	font-size:1.5em;
+	color: green;
+	margin: auto;
+	text-align: center;
+}
+#Continent {
+	background-color:#FFFFFF;
+	text-align:center;
+
+}
+#map {
+	position: absolute;
+	opacity: 92%;
+	top : 15vh;
+	width: 43.75vw;
+    height:80vh;
+	margin-left:51.25vw;
+	background-color:#FFFFFF;
+}
+#flag_image{
+	height: 200px;
+}
+body {
+	background-image:url(fond.jpg);
+	background-repeat: no-repeat;
+	margin: 0px;
+}
+
+@font-face {
+	font-family: "police";
+	src: url('Font/JosefinSans-Regular.ttf');
+}
+@font-face {
+	font-family: "police";
+	font-style: italic;
+	src: url('Font/JosefinSans-Italic.ttf');
+}
+@font-face {
+	font-family: "police";
+	font-weight: bold;
+	src: url('Font/JosefinSans-Bold.ttf');
+}
+
+
+
+</style>
+
+
+
+<script>
+
+	var hymne = new Audio ("Hymnes/waiting-theme.mp3");
+
+    var map = L.map('map',{
+    center: [-22.294851, 166.451406],
+    zoom:3
+    });
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+
+  document.getElementById("continent_selector").addEventListener("change", setZoom);
+
+  function setCountrySelector(){
+
+
+    var continents = document.getElementById("continent_selector");
+    continents.selectedIndex = 1;
+
+
+    for (var k = 0; k<continents.length; k++){
+
+    	continent = continents.options[k].value;
+    	var xhr = new XMLHttpRequest();
+	    xhr.onload = function() {
+
+	      var data = JSON.parse(this.responseText);
+	      
+	      var length = data.length ;
+	      var center_lat = data[0][0];
+	      var center_lon = data[0][1];
+	      var zoom = data[0][3];
+
+	      map.setView([center_lat, center_lon], zoom);
+
+	      for (var i =1 ; i<length; i++){
+	      		let m = L.marker([data[i].lat,data[i].lon]);
+	      		m.addTo(map);
+	            m.bindPopup('Lieu = '+data[i].name);
+	            m.addEventListener("click", setData);
+	            m.country_name = data[i].name;
+	      }
+
+	    };
+
+	    xhr.open('GET','/service/continent/'+continent,true);
+	    xhr.send();
+	}
+
+  }
+
+  function setZoom(){
+
+
+    var continent = document.getElementById("continent_selector").value;
+
+	var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+
+      var data = JSON.parse(this.responseText);
+      var center_lat = data[0][0];
+      var center_lon = data[0][1];
+      var zoom = data[0][3];
+
+      map.setView([center_lat, center_lon], zoom);
+
+    };
+
+    xhr.open('GET','/service/continent/'+continent,true);
+    xhr.send();
+}
+
+  function setData(e){
+  	var pays = this.country_name ;
+    var xhr = new XMLHttpRequest();
+
+    console.log(e,this);
+    xhr.onload = function() {
+
+      var data = JSON.parse(this.responseText);
+
+
+				document.getElementById("name").innerHTML = "<strong style = 'text-decoration: underline'>Country :</strong> " + data.name  ;
+				document.getElementById("capital").innerHTML = "<strong style = 'text-decoration: underline'>Capital :</strong> " + data.capital  ;
+				document.getElementById("language").innerHTML = "<strong style = 'text-decoration: underline'>Language :</strong> " + data.language  ;
+				document.getElementById("flag").innerHTML = "<img id = 'flag_image' src='Drapeau/"+data.flag+"'>"  ;
+				document.getElementById("head_of_state_name").innerHTML = "<strong style = 'text-decoration: underline'>Head of state :</strong> " + data.head_of_state_name  ;
+				document.getElementById("head_of_state_title").innerHTML = "<strong style = 'text-decoration: underline'>Head of state title :</strong> " + data.head_of_state_title  ;
+				document.getElementById("population").innerHTML = "<strong style = 'text-decoration: underline'>Population :</strong> " + data.population  ;
+				document.getElementById("surface").innerHTML = "<strong style = 'text-decoration: underline'>Surface :</strong> " + data.surface  ;
+				document.getElementById("gdp").innerHTML = "<strong style = 'text-decoration: underline'>G.D.P :</strong> " + data.gdp  ;
+				document.getElementById("lat").innerHTML = "<strong style = 'text-decoration: underline'>Latitude :</strong> " + data.lat  ;
+				document.getElementById("long").innerHTML = "<strong style = 'text-decoration: underline'>Longitude :</strong> " + data.long  ;
+
+        hymne.pause();
+        hymne = new Audio("Hymnes/"+data.hymne);
+		hymne.play();
+    };
+
+    xhr.open('GET','/service/country/'+pays,true);
+
+    xhr.send();
+  }
+
+  window.onload= setCountrySelector;
+
+
+</script>
+
+</body>
+
