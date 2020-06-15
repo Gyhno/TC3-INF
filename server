@@ -1,0 +1,5 @@
+#on définit la classe : 
+class RequestHandler(http.server.SimpleHTTPRequestHandler):
+
+# méthode qui véhicule les info à l'utilisateur : 
+def send_info(self,country):
