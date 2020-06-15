@@ -2,4 +2,7 @@
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
 # méthode qui véhicule les info à l'utilisateur : 
-def send_info(self,country):
+  def send_info(self,country):
+    req=conn.cursor() #correspond à la requete dans la base de données
+    req.execute("SELECT*ROM countries WHERE nam = '"country"'")
+    result = requ.fetchall() #renvoie toutes les lignes de la requête 
