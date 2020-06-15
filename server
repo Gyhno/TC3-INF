@@ -4,5 +4,20 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 # méthode qui véhicule les info à l'utilisateur : 
   def send_info(self,country):
     req=conn.cursor() #correspond à la requete dans la base de données
-    req.execute("SELECT*ROM countries WHERE nam = '"country"'")
+    req.execute("SELECT*ROM countries WHERE nam = '"+country+"'")
     result = requ.fetchall() #renvoie toutes les lignes de la requête 
+    print(result)
+    if result==[]:
+      print("Ce pays n'est pas dans la base de données")
+    else : 
+      data = result[0] 
+      # puis il faut mettre les données sous forme de dictionnaire 
+      j=0
+      dico = {}
+      for row in data :
+        dico[table[j]]=row
+        j+=1
+      print(dico)
+    #mettre ces données sous forme json :
+    self.send_json(dico)
+    
