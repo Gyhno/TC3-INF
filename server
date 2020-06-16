@@ -1,3 +1,37 @@
+
+
+class RequestHandler(http.server.SimpleHTTPRequestHandler):
+    static_dir = '/client'
+    server_version = 'Server v0'
+
+
+
+    # Pour gérer les requetes de types HEAD
+    def do_HEAD(self):
+        self.send_static()
+    
+
+
+     # Pour gérer les requetes de types GET
+    def do_GET(self):
+        self.init_params()
+        
+        if self.path_info[0] == "service" and self.path_info[1] == "country":
+            self.send_info(self.path_info[2])   
+                 
+        elif self.path_info[0] == "service" and self.path_info[1] == "continent":
+            self.send_info_carte(self.path_info[2])
+        else:
+            self.send_static()
+
+
+
+
+
+
+
+
+
 #on définit la classe : 
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
