@@ -1,0 +1,33 @@
+
+
+import sqlite3
+
+
+conn = sqlite3.connect('pays.db')
+
+def save_country(conn,Country,info,continent): #prend en argument
+                                               #con, le pays, la base de donnée et
+                                               #le contient 
+  c = conn.cursor()
+  sql = 'INSERT INTO countries VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)'
+  # on enregistre les infos 
+  name = get_name(info)
+  capital = get_capital(info)
+  language = get_languages(info)
+  head_of_state_name = get_head_of_state(info)[0]
+  head_of_state_title = get_head_of_state(info)[1]
+  flag = get_image(Country)
+  population = get_population(info)
+  surface = get_surface(info)
+  gdp = get_gdp(info)
+  coords = get_coords(info)
+  c.execute(sql,(Country,name, capital, language,flag,head_of_state_name,head_of_state_title,population,surface,gdp, coords['lat'],coords['long'],continent)) #coords est cense etre un dictionnaire
+  conn.commit()
+  
+def read_country(conn,country):
+      c = conn.cursor()
+      sql = 'SELECT wp, name, capital, language, flag, head_of_state, population, surface, surface, gdp, lat, long FROM countries'
+      c.execute(sql)
+      rows = c.fetchall()
+      for row in rows:
+          print('{0} : {1}-{2}-{3}-{4}-{5}-{6}-{7}-{8}-{9}-{10}-{11}'.format(row[0], row[1], row[2],row[3],row[4], row[5], row[6],row[7],row[8], row[9], row[10],row[11],row[12],row[13]))
