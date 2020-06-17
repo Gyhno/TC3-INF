@@ -1,3 +1,8 @@
+import re
+from zipfile import ZipFile
+import json
+
+
 def get_info(country,continent):  #prend en argument le pays
                                    #et le contient(océanie ou amérique du sud)
     with ZipFile('{}.zip'.format(continent),'r') as z:
@@ -32,45 +37,41 @@ gu = get_info('Guyana','south_america')
 pa = get_info('Paraguay','south_america')
 
 def print_capital(info): #pour obtenir les info correspondantes
-  nom = info.get('commun_name')
-  capital = info.get('capital')
-  coord = info.get('coordinates')
-  return nom, capital, coord
+  nom_pays = info.get('commun_name') #nom commun du pays
+  capital = info.get('capital') #capitale du pays
+  coord = info.get('coordinates') #coordonnées
+  return nom_pays, capital, coord
   
-def get_name(info):
-  name = info['conventional_long_name'] # tous les pays l'ont
-  #on traite le cas particulier e l'argentine pour que ça marche
-  if "Argentine" in name:
-        return "Argentine Republic"
-  #traiter les autres cas
-  if '[[' in name:
-        m = re.match("\[\[(\w+)\]\]", name) 
-        m=m.group(1)
+def get_name(info): #Pour avoir le nom commun du pays
+    name=info['conventional_long_name']
+    if "Argentine" in name:  #problème inexplicable avec l'argentine
+        return "Argentine"
+    elif '[[' in name:
+        new_name = re.match("\[\[(\w+)\]\]", name) 
+        new_name=new_name.group(1)
     elif '[' in name:
-        m=re.match("\[(\w+)\]", name) 
-        m=m.group(1)
+        new_name=re.match("\[(\w+)\]", name) 
+        new_name=new_name.group(1)
     else:
-        m=name
-    return m
+        new_name=name
+    return new_name
 
-def get_capital(info): # pour avoir l'info sur la capitale du pays
-  capital = info['capital']
-  if 'common_name' in info:
+def get_capital(info): #Pour avoir l'info sur la capitale du pays
+    capital = info['capital']
+    if 'common_name' in info:
         if info['common_name'] =='Bolivia': # cas particulier à traiter
             return 'Sucre is the constitutional capital, but the government seats at La Paz'
-    if '[[' in capital: #on traite ce cas là
-        #m = re.match("\[\[(\w+)\]\]", capital)
-        #capital = m.group(1) 
+    if '[[' in capital: 
         capital=capital[2:-2]
     return capital
     
 def get_population(info): #renvoie info sur la population
-  if 'common_name' in info:
+    if 'common_name' in info:
         if info['common_name']=='Venezuela': # cas particulier pour que ça fonctionne
-            return '28,067,000'
-  if 'population_census' in info:
+            return '28,067,000' #info trouvée à coté
+    if 'population_census' in info:
         return info['population_census']
-  elif "population_estimate" in info:
+    elif "population_estimate" in info:
         pop=info['population_estimate']
         if "(2019)" in pop:
             pop=pop[:-7]
@@ -107,9 +108,9 @@ def get_head_of_state(info):    #renvoie le nom du leader
         return (name,title)
     return "Erreur sur la page wikipédia"
 
-#récupération des coordonnées du pays
 
-def get_coords(info): 
+
+def get_coords(info):  #récupération des coordonnées du pays
     """ne fonctionne que pour les formats Nbre|nbre|lettre|nb|nb|lettre|qqchose, il faut traiter à part ceux qui on des secondes NB|nb|nb|lettre"""
     lat=None #initialisation des coordonnées
     long=None
@@ -164,7 +165,7 @@ def get_gdp(info):
     
     #récupération de la langue officielle du pays (ou de la première langue officielle quand il y en a plusieurs)
     
-    def get_languages(info):
+def get_languages(info):
     if "common_name" in info:#pays ne pouvant pas être traité avec le même appel que les autres
         if info["common_name"]=="Bolivia":
             return "Spanish" 
@@ -220,3 +221,4 @@ def get_infos(info):
 
 def get_image(country):
     return country+'.png'
+    
